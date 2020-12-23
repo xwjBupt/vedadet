@@ -3,6 +3,7 @@ import os
 import os.path as osp
 import numpy as np
 import torch
+import pdb
 
 from vedacore.misc import Config, load_weights, ProgressBar, mkdir_or_exist
 from vedacore.fileio import dump
@@ -13,16 +14,18 @@ from vedacore.parallel import MMDataParallel
 
 def parse_args():
     parser = argparse.ArgumentParser(description='Train a detector')
-    parser.add_argument('config', help='train config file path')
-    parser.add_argument('checkpoint', help='checkpoint file')
-    parser.add_argument('--outdir', default='eval_dirs/tmp/tinaface/', help='directory where widerface txt will be saved')
+    parser.add_argument('--config', default='/nas/xcode/vedadet/configs/trainval/tinaface/tinaface.py',
+                        help='train config file path')
+    parser.add_argument('--checkpoint', default='/nas/xcode/vedadet/tinaface_epoch_185_weights.pth',
+                        help='checkpoint file')
+    parser.add_argument('--outdir', default='eval_dirs/tmp/test_tinaface/',
+                        help='directory where widerface txt will be saved')
 
     args = parser.parse_args()
     return args
 
 
 def write_txt(save_folder, img_name, dets):
-
     save_name = osp.join(save_folder, img_name[:-4] + ".txt")
     dirname = osp.dirname(save_name)
     if not osp.isdir(dirname):
@@ -44,7 +47,6 @@ def write_txt(save_folder, img_name, dets):
 
 
 def prepare(cfg, checkpoint):
-
     engine = build_engine(cfg.val_engine)
     load_weights(engine.model, checkpoint, map_location='cpu')
 
@@ -74,8 +76,9 @@ def test(engine, data_loader, outdir):
         filename = osp.join(*filename)
 
         with torch.no_grad():
-            result = engine(data)[0]
-
+            result = engine(data)[0][0]
+        print(result.shape)
+        pdb.set_trace()
         if outdir is not None:
             write_txt(outdir, filename, result)
         results.append(result)
@@ -86,7 +89,6 @@ def test(engine, data_loader, outdir):
 
 
 def main():
-
     args = parse_args()
     cfg = Config.fromfile(args.config)
     mkdir_or_exist(osp.abspath(args.outdir))
@@ -96,6 +98,7 @@ def main():
     results = test(engine, data_loader, args.outdir)
 
     data_loader.dataset.evaluate(results, 'mAP')
+
 
 if __name__ == '__main__':
     main()

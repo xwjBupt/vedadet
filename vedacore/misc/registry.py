@@ -99,4 +99,5 @@ def build_from_cfg(cfg, registry, module_name='module', default_args=None):
     if default_args is not None:
         for name, value in default_args.items():
             args.setdefault(name, value)
+    print (obj_cls)
     return obj_cls(**args)

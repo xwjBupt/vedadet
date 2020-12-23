@@ -1,13 +1,13 @@
 # 1. data
 dataset_type = 'WIDERFaceDataset'
-data_root = 'data/WIDERFace/'
+data_root = '/nas/xcode/vedadet/data/WIDERFace/'
 img_norm_cfg = dict(
     mean=[123.675, 116.28, 103.53], std=[1, 1, 1], to_rgb=True)
 size_divisor = 32
 
 data = dict(
-    samples_per_gpu=4,
-    workers_per_gpu=2,
+    samples_per_gpu=1,
+    workers_per_gpu=0,
     train=dict(
         typename=dataset_type,
         ann_file=data_root + 'WIDER_train/train.txt',
@@ -108,7 +108,7 @@ meshgrid = dict(
     strides=strides,
     base_anchor=dict(
         typename='BBoxBaseAnchor',
-        octave_base_scale=2**(4 / 3),
+        octave_base_scale=2 ** (4 / 3),
         scales_per_octave=scales_per_octave,
         ratios=ratios,
         base_sizes=strides))
@@ -149,7 +149,7 @@ train_engine = dict(
             allowed_border=-1,
             pos_weight=-1,
             debug=False)),
-    optimizer=dict(typename='SGD', lr=3.75e-3, momentum=0.9, weight_decay=5e-4)) # 3 GPUS
+    optimizer=dict(typename='SGD', lr=3.75e-3, momentum=0.9, weight_decay=5e-4))  # 3 GPUS
 
 ## 3.2 val engine
 val_engine = dict(
@@ -166,7 +166,7 @@ val_engine = dict(
     test_cfg=dict(
         min_bbox_size=0,
         score_thr=0.01,
-        nms=dict(typename='lb_nms', iou_thr=0.45),
+        nms=dict(typename='lb_nms', iou_thr=0.1),
         max_per_img=-1),
     use_sigmoid=use_sigmoid,
     eval_metric=None)
@@ -187,7 +187,7 @@ hooks = [
 ]
 
 # 5. work modes
-modes = ['train']#, 'val']
+modes = ['train']  # , 'val']
 max_epochs = 631
 
 # 6. checkpoint

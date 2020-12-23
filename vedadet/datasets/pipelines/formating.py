@@ -1,6 +1,7 @@
 import numpy as np
 import torch
 from collections.abc import Sequence
+import pdb
 
 from vedacore.misc import is_str, registry
 from vedacore.parallel import DataContainer as DC
@@ -126,7 +127,7 @@ class Transpose(object):
 
     def __repr__(self):
         return self.__class__.__name__ + \
-            f'(keys={self.keys}, order={self.order})'
+               f'(keys={self.keys}, order={self.order})'
 
 
 @registry.register_module('pipeline')
@@ -302,13 +303,15 @@ class Collect(object):
         for key in self.meta_keys:
             img_meta[key] = results[key]
         data['img_metas'] = DC(img_meta, cpu_only=True)
+        # data['img_metas'] = DC([[img_meta]], cpu_only=True)
+
         for key in self.keys:
             data[key] = results[key]
         return data
 
     def __repr__(self):
         return self.__class__.__name__ + \
-            f'(keys={self.keys}, meta_keys={self.meta_keys})'
+               f'(keys={self.keys}, meta_keys={self.meta_keys})'
 
 
 @registry.register_module('pipeline')

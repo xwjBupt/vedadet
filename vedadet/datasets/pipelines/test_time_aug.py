@@ -1,7 +1,7 @@
 # adapted from https://github.com/open-mmlab/mmcv or
 # https://github.com/open-mmlab/mmdetection
 import warnings
-
+import pdb
 from vedacore.misc import is_list_of, registry
 from .compose import Compose
 
@@ -90,7 +90,6 @@ class MultiScaleFlipAug(object):
            dict[str: list]: The augmented data, where each value is wrapped
                into a list.
         """
-
         aug_data = []
         flip_aug = [False, True] if self.flip else [False]
         for scale in self.img_scale:

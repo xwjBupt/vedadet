@@ -1,6 +1,6 @@
 import os.path as osp
 import xml.etree.ElementTree as ET
-
+from tqdm import tqdm
 import vedacore.fileio as fileio
 from vedacore.misc import registry
 from .xml_style import XMLDataset
@@ -13,7 +13,7 @@ class WIDERFaceDataset(XMLDataset):
     Conversion scripts can be found in
     https://github.com/sovrasov/wider-face-pascal-voc-annotations
     """
-    CLASSES = ('face', )
+    CLASSES = ('face',)
 
     def __init__(self, **kwargs):
         super(WIDERFaceDataset, self).__init__(**kwargs)
@@ -31,7 +31,7 @@ class WIDERFaceDataset(XMLDataset):
         data_infos = []
         img_ids = fileio.list_from_file(ann_file)
         self.img_ids = img_ids
-        for img_id in img_ids:
+        for img_id in tqdm(img_ids):
             filename = f'{img_id}.jpg'
             xml_path = osp.join(self.img_prefix, 'Annotations',
                                 f'{img_id}.xml')

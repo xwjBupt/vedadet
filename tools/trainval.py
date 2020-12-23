@@ -2,7 +2,7 @@ import argparse
 import os.path as osp
 import shutil
 import time
-
+import os
 from vedacore.misc import Config, mkdir_or_exist, set_random_seed
 from vedacore.parallel import init_dist
 from vedadet.assembler import trainval
@@ -11,8 +11,9 @@ from vedadet.misc import get_root_logger
 
 def parse_args():
     parser = argparse.ArgumentParser(description='Train a detector')
-    parser.add_argument('config', help='train config file path')
-    parser.add_argument('--workdir', help='the dir to save logs and models')
+    parser.add_argument('--config', default='/nas/xcode/vedadet/configs/trainval/tinaface/tinaface.py',
+                        help='train config file path')
+    parser.add_argument('--workdir', default='test', help='the dir to save logs and models')
     parser.add_argument(
         '--launcher',
         choices=['none', 'pytorch'],
@@ -25,6 +26,7 @@ def parse_args():
 
 
 def main():
+    os.environ['CUDA_VISIBLE_DEVICES'] = '2'
     args = parse_args()
 
     cfg = Config.fromfile(args.config)

@@ -4,6 +4,7 @@ import torch.nn as nn
 from vedacore.misc import registry
 from ..builder import build_backbone, build_head, build_neck
 from .base_detector import BaseDetector
+import pdb
 
 
 @registry.register_module('detector')
